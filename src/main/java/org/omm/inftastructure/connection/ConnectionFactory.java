@@ -15,7 +15,7 @@ public abstract class ConnectionFactory {
         this.databaseName = "library";
     }
 
-    public abstract Connection createConnection(); // create connection with DB server, using JDBC connection
+    public abstract Connection createConnection() throws ClassNotFoundException; // create connection with DB server, using JDBC connection
 
     public String getUsername() {
         return username;

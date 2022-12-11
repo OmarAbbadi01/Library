@@ -1,17 +1,15 @@
 package org.omm.domain.service;
 
-import org.omm.domain.model.Book;
+import lombok.AllArgsConstructor;
+import org.omm.inftastructure.entity.Book;
 import org.omm.domain.repository.BookRepository;
 
 import java.util.List;
 
+@AllArgsConstructor
 public class BookServiceImpl implements BookService {
 
     private final BookRepository repository;
-
-    public BookServiceImpl(BookRepository repository) {
-        this.repository = repository;
-    }
 
     // all methods should be implemented correctly
     @Override

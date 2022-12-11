@@ -1,19 +1,20 @@
 package org.omm.domain.repository;
 
 
-import org.omm.domain.model.Book;
+import org.omm.domain.model.BookDto;
+import org.omm.inftastructure.entity.Book;
 
 import java.util.List;
 
 public interface BookRepository {
 
-    Book findById(Long id) throws Exception;
+    BookDto findById(Long id) throws Exception;
 
-    List<Book> findAll();
+    List<BookDto> findAll() throws Exception;
 
-    void create(Book book);
+    void create(BookDto book) throws Exception;
 
-    void delete(Long id);
+    void delete(Long id) throws Exception;
 
-    void update(Book book);
+    void update(BookDto book) throws Exception;
 }

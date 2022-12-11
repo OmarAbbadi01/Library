@@ -1,7 +1,8 @@
 package org.omm.inftastructure.dao;
 
-import org.omm.domain.model.Book;
+import org.omm.domain.model.BookDto;
 import org.omm.domain.repository.BookRepository;
+import org.omm.inftastructure.entity.Book;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,36 +18,47 @@ public class BookDao implements BookRepository {
     }
 
     @Override
-    public Book findById(Long id) throws Exception {
+    public BookDto findById(Long id) throws Exception {
         String query = "SELECT * FROM book WHERE id = ?";
         for (Connection conn : connections) {
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setInt(1, id.intValue());
-            ResultSet result = statement.executeQuery();
+            ResultSet result = statement.executeQuery(); // id, author_id, title
             if (result.next()) {
-                return new Book(result.getLong("id"), result.getLong("author_id"), result.getString("title"));
+                Long id_ = result.getLong("id");
+                Long author_id = result.getLong("author_id");
+                String title = result.getString("title");
+                Book book = new Book(id_, author_id, title);
+                return Mapper.toBookDto(book);
             }
         }
         return null;
     }
 
     @Override
-    public List<Book> findAll() {
+    public List<BookDto> findAll() throws Exception {
         return null;
     }
 
     @Override
-    public void create(Book book) {
+    public void create(BookDto book) throws Exception {
+        String query = "INSERT INTO book VALUES (?, ?, ?)";
+        for (Connection conn : connections) {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, book.getId().intValue());
+            statement.setInt(2, book.getAuthorId().intValue());
+            statement.setString(3, book.getTitle());
+            statement.executeUpdate();
+        }
+    }
+
+    @Override
+    public void delete(Long id) throws Exception {
 
     }
 
     @Override
-    public void delete(Long id) {
-
-    }
-
-    @Override
-    public void update(Book book) {
+    public void update(BookDto book) throws Exception {
 
     }
 }

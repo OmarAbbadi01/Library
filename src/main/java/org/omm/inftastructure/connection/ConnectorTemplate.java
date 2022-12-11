@@ -1,20 +1,19 @@
 package org.omm.inftastructure.connection;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.sql.Connection;
 
 // Template
+@AllArgsConstructor
+@Getter
 public abstract class ConnectorTemplate {
 
     protected volatile static Connection connection;
     protected final String username;
     protected final String password;
     protected final String databaseName;
-
-    public ConnectorTemplate(String username, String password, String databaseName) {
-        this.username = username;
-        this.password = password;
-        this.databaseName = databaseName;
-    }
 
     public Connection getConnection() {
         if (connection == null) {
@@ -33,15 +32,4 @@ public abstract class ConnectorTemplate {
 
     protected abstract void createConnection() throws Exception;
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getDatabaseName() {
-        return databaseName;
-    }
 }

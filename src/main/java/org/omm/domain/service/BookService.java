@@ -1,6 +1,6 @@
 package org.omm.domain.service;
 
-import org.omm.domain.model.Book;
+import org.omm.inftastructure.entity.Book;
 
 import java.util.List;
 

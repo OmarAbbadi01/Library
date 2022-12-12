@@ -12,26 +12,24 @@ import java.util.List;
 
 public class BookDao implements BookRepository {
 
-    private final Connection[] connections;
+    private final List<Connection> connections;
 
-    public BookDao(Connection... connections) {
+    public BookDao(List<Connection> connections) {
         this.connections = connections;
     }
 
     @Override
     public BookDto findById(Long id) throws Exception {
         String query = "SELECT * FROM book WHERE id = ?";
-        for (Connection conn : connections) {
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1, id.intValue());
-            ResultSet result = statement.executeQuery(); // id, author_id, title
-            if (result.next()) {
-                Long id_ = result.getLong("id");
-                Long author_id = result.getLong("author_id");
-                String title = result.getString("title");
-                Book book = new Book(id_, author_id, title);
-                return Mapper.toBookDto(book);
-            }
+        Connection conn = connections.get(0);
+        PreparedStatement statement = conn.prepareStatement(query);
+        statement.setInt(1, id.intValue());
+        ResultSet result = statement.executeQuery(); // id, author_id, title
+        if (result.next()) {
+            Long authorId = result.getLong("author_id");
+            String title = result.getString("title");
+            Book book = new Book(id, authorId, title);
+            return Mapper.toBookDto(book);
         }
         return null;
     }
@@ -41,16 +39,15 @@ public class BookDao implements BookRepository {
     public List<BookDto> findAll() throws Exception {
         String query = "SELECT * FROM book";
         List<BookDto> books = new ArrayList<>();
-        for (Connection conn : connections) {
-            PreparedStatement statement = conn.prepareStatement(query);
-            ResultSet result = statement.executeQuery(); // id, author_id, title
-            while (result.next()) {
-                Long id = result.getLong("id");
-                Long author_id = result.getLong("author_id");
-                String title = result.getString("title");
-                Book book = new Book(id, author_id, title);
-                books.add(Mapper.toBookDto(book));
-            }
+        Connection conn = connections.get(0);
+        PreparedStatement statement = conn.prepareStatement(query);
+        ResultSet result = statement.executeQuery(); // id, author_id, title
+        while (result.next()) {
+            Long id = result.getLong("id");
+            Long authorId = result.getLong("author_id");
+            String title = result.getString("title");
+            Book book = new Book(id, authorId, title);
+            books.add(Mapper.toBookDto(book));
         }
         return books;
     }
@@ -69,7 +66,7 @@ public class BookDao implements BookRepository {
 
     @Override
     public void delete(Long id) throws Exception {
-        String query = "DELETE FROM book WHERE id = ?" ;
+        String query = "DELETE FROM book WHERE id = ?";
         for (Connection conn : connections) {
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setInt(1, id.intValue());
@@ -79,7 +76,7 @@ public class BookDao implements BookRepository {
 
     @Override
     public void update(BookDto book) throws Exception {
-        String query = "UPDATE book SET (id = ?, author_id = ?, title = ?) WHERE id = ?" ;
+        String query = "UPDATE book SET id = ?, author_id = ?, title = ? WHERE id = ?";
         for (Connection conn : connections) {
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setInt(1, book.getId().intValue());
@@ -93,15 +90,12 @@ public class BookDao implements BookRepository {
     @Override
     public boolean existsById(Long id) throws Exception {
         String query = "SELECT COUNT(*) FROM book WHERE id = ?";
-        for (Connection conn : connections) {
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1, id.intValue());
-            ResultSet result = statement.executeQuery();
-            if (result.next()) {
-                if (result.getString("count").compareTo(String.valueOf(Long.valueOf(0L))) > 0) {
-                    return true;
-                }
-            }
+        Connection conn = connections.get(0);
+        PreparedStatement statement = conn.prepareStatement(query);
+        statement.setInt(1, id.intValue());
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            return result.getString("count").compareTo(String.valueOf(Long.valueOf(0L))) > 0;
         }
         return false;
     }

@@ -12,15 +12,17 @@ import org.omm.inftastructure.connection.PostgreSqlConnector;
 import org.omm.inftastructure.dao.BookDao;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetUp {
 
-    private Connection[] setUpConnections() {
-        ConnectorTemplate mysqlConnector = new MysqlConnector("library", "root", "library");
+    private List<Connection> setUpConnections() {
         ConnectorTemplate postgreSqlConnector = new PostgreSqlConnector("library", "root", "library");
-        Connection[] connections = new Connection[2];
-        connections[0] = postgreSqlConnector.getConnection();
-        connections[1] = mysqlConnector.getConnection();
+        //ConnectorTemplate mysqlConnector = new MysqlConnector("library", "root", "library");
+        List<Connection> connections = new ArrayList<>();
+        connections.add(postgreSqlConnector.getConnection());
+        //connections.add(mysqlConnector.getConnection());
         return connections;
     }
 

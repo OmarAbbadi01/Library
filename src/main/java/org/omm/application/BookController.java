@@ -32,9 +32,9 @@ public class BookController {
         return new BookResponse<>(bookDto, Status.CREATED);
     }
 
-    public BookResponse<Long> delete(Long id) throws Exception {
+    public BookResponse<String> delete(Long id) throws Exception {
         service.delete(id);
-        return new BookResponse<>(id, Status.DELETED);
+        return new BookResponse<>("ID: " + id, Status.DELETED);
     }
 
     public BookResponse<BookDto> update(BookDto bookDto) throws Exception {

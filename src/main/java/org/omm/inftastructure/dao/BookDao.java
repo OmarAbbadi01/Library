@@ -7,6 +7,7 @@ import org.omm.inftastructure.entity.Book;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookDao implements BookRepository {
@@ -37,7 +38,20 @@ public class BookDao implements BookRepository {
 
     @Override
     public List<BookDto> findAll() throws Exception {
-        return null;
+        String query = "SELECT * FROM book";
+        List<BookDto> books = new ArrayList<>();
+        for (Connection conn : connections) {
+            PreparedStatement statement = conn.prepareStatement(query);
+            ResultSet result = statement.executeQuery(); // id, author_id, title
+            while (result.next()) {
+                Long id = result.getLong("id");
+                Long author_id = result.getLong("author_id");
+                String title = result.getString("title");
+                Book book = new Book(id, author_id, title);
+                books.add(Mapper.toBookDto(book));
+            }
+        }
+        return books;
     }
 
     @Override
@@ -60,5 +74,21 @@ public class BookDao implements BookRepository {
     @Override
     public void update(BookDto book) throws Exception {
 
+    }
+
+    @Override
+    public boolean existsById(Long id) throws Exception {
+        String query = "SELECT COUNT(*) FROM book WHERE id = ?";
+        for (Connection conn : connections) {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, id.intValue());
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                if (result.getString("count").compareTo(String.valueOf(Long.valueOf(0L))) > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

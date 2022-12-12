@@ -1,18 +1,19 @@
 package org.omm.domain.service;
 
-import org.omm.inftastructure.entity.Book;
+import org.omm.domain.model.BookDto;
 
 import java.util.List;
 
 public interface BookService {
 
-    Book findById(Long id);
+    BookDto findById(Long id) throws Exception;
 
-    List<Book> findAll();
+    List<BookDto> findAll() throws Exception;
 
-    void create(Book book);
+    void create(BookDto book) throws Exception;
 
-    void delete(Long id);
+    void delete(Long id) throws Exception;
 
-    void update(Book book);
+    void update(BookDto book) throws Exception;
+
 }

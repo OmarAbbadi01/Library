@@ -2,7 +2,6 @@ package org.omm.domain.repository;
 
 
 import org.omm.domain.model.BookDto;
-import org.omm.inftastructure.entity.Book;
 
 import java.util.List;
 
@@ -17,4 +16,6 @@ public interface BookRepository {
     void delete(Long id) throws Exception;
 
     void update(BookDto book) throws Exception;
+
+    boolean existsById(Long id) throws Exception;
 }

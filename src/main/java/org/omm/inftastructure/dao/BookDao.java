@@ -36,6 +36,7 @@ public class BookDao implements BookRepository {
         return null;
     }
 
+
     @Override
     public List<BookDto> findAll() throws Exception {
         String query = "SELECT * FROM book";
@@ -68,12 +69,25 @@ public class BookDao implements BookRepository {
 
     @Override
     public void delete(Long id) throws Exception {
-
+        String query = "DELETE FROM book WHERE id = ?" ;
+        for (Connection conn : connections) {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, id.intValue());
+            statement.executeUpdate();
+        }
     }
 
     @Override
     public void update(BookDto book) throws Exception {
-
+        String query = "UPDATE book SET (id = ?, author_id = ?, title = ?) WHERE id = ?" ;
+        for (Connection conn : connections) {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, book.getId().intValue());
+            statement.setInt(2, book.getAuthorId().intValue());
+            statement.setString(3, book.getTitle());
+            statement.setInt(4, book.getId().intValue());
+            statement.executeUpdate();
+        }
     }
 
     @Override

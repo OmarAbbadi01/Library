@@ -15,7 +15,7 @@ public class BookController {
 
     private final BookValidator validator;
 
-
+    // Endpoints
     public BookResponse<BookDto> findById(Long id) throws Exception {
         BookDto bookDto = service.findById(id);
         return new BookResponse<>(bookDto, Status.OK);

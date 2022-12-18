@@ -3,12 +3,12 @@ package org.omm;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class BookTable extends JFrame {
+public class Dashboard extends JFrame {
     private final String[] columnNames = {"ID", "Author ID", "Title"};
     private JTable bookTable;
     private DefaultTableModel bookModel;
 
-    public BookTable() {
+    public Dashboard() {
         setTitle("Book Table");
         setSize(400, 300);
 

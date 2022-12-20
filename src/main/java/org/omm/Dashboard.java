@@ -1,45 +1,62 @@
 package org.omm;
 
+
+import org.omm.domain.model.BookDto;
+import org.omm.domain.service.BookService;
+import org.omm.domain.service.BookServiceImpl;
+import org.omm.domain.service.Observer;
+import org.omm.domain.service.Subject;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.util.List;
+import java.util.Scanner;
 
-public class Dashboard extends JFrame {
+public class Dashboard extends JFrame implements Observer {
     private final String[] columnNames = {"ID", "Author ID", "Title"};
     private JTable bookTable;
     private DefaultTableModel bookModel;
 
-    public Dashboard() {
+    private Subject subject;
+
+    private BookService bookService;
+
+
+
+    public Dashboard(Subject newSubject, BookService bookService) throws Exception{
+        this.subject = newSubject;
+        this.bookService = bookService;
+        subject.register(this);
         setTitle("Book Table");
         setSize(400, 300);
 
-        String[][] data = {
-                {"123", "456", "The Great Gatsby"},
-                {"789", "012", "To Kill a Mockingbird"},
-                {"345", "678", "1984"}
-        };
+        String[][] data = toMap(bookService.findAll());
+
         bookModel = new DefaultTableModel(data, columnNames);
         bookTable = new JTable(bookModel);
 
         add(new JScrollPane(bookTable));
-
         setVisible(true);
+
     }
 
-    // called from notify
-    void updateData() {
-        // call find All
-        // update view
-        String[][] data = {
-                {"14645654", "4565435345", "Th345345345e Great Gatsby"},
-                {"7353589", "0134534532", "To Kill a Mockingbird3453453453"},
-                {"345345345435", "63453453578", "34534531984"}
-        };
+    @Override
+    public void updateData() throws Exception{
+        String [][] data = toMap(bookService.findAll());
         bookModel = new DefaultTableModel(data, columnNames);
         bookTable = new JTable(bookModel);
-
         add(new JScrollPane(bookTable));
-
         setVisible(true);
     }
 
+    private String [][] toMap(List<BookDto> bookDtos){
+
+        String[][] data = new String[bookDtos.size()][3];
+        for(int i =0; i< bookDtos.size(); i++){
+            data[i][0] = bookDtos.get(i).getId().toString();
+            data[i][1] = bookDtos.get(i).getAuthorId().toString();
+            data[i][2] = bookDtos.get(i).getTitle();
+        }
+        return data;
+    }
 }

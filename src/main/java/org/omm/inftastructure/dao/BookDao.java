@@ -18,6 +18,19 @@ public class BookDao implements BookRepository {
         this.connections = connections;
     }
 
+    private void before() throws Exception{
+        String query = "CREATE TABLE IF NOT EXISTS book  \n" +
+                "(\n" +
+                "\tid BIGINT, \n" +
+                "\tauthor_id BIGINT,\n" +
+                "\ttitle VARCHAR,\n" +
+                "\tprimary key (id)\n" +
+                ");";
+        for (Connection c : connections) {
+            PreparedStatement p = c.prepareStatement(query);
+            p.executeUpdate();
+        }
+    }
     @Override
     public BookDto findById(Long id) throws Exception {
         String query = "SELECT * FROM book WHERE id = ?";
@@ -37,6 +50,7 @@ public class BookDao implements BookRepository {
 
     @Override
     public List<BookDto> findAll() throws Exception {
+        before();
         String query = "SELECT * FROM book";
         List<BookDto> books = new ArrayList<>();
         Connection conn = connections.get(0);

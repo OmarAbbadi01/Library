@@ -12,8 +12,9 @@ public class Runner {
     private Scanner in;
     private BookController controller;
 
-    public void run() {
+    public void run() throws Exception{
         SetUp setup = new SetUp();
+        setup.setUpDashboard();
         controller = setup.setUpController();
         in = new Scanner(System.in);
         int input = 1;

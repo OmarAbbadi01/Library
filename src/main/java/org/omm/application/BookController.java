@@ -6,14 +6,17 @@ import org.omm.application.response.Status;
 import org.omm.domain.model.BookDto;
 import org.omm.domain.service.BookService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
-public class BookController {
+public class BookController{
+
 
     private final BookService service;
 
     private final BookValidator validator;
+
 
     // Endpoints
     public BookResponse<BookDto> findById(Long id) throws Exception {
@@ -42,5 +45,4 @@ public class BookController {
         service.update(bookDto);
         return new BookResponse<>(bookDto, Status.UPDATED);
     }
-
 }

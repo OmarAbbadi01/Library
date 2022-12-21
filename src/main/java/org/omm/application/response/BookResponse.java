@@ -2,6 +2,7 @@ package org.omm.application.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.omm.domain.model.Status;
 
 @AllArgsConstructor
 @Getter

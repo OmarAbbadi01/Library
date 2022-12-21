@@ -2,6 +2,8 @@ package org.omm;
 
 import lombok.extern.java.Log;
 import org.omm.application.BookController;
+import org.omm.domain.exception.BusinessException;
+import org.omm.domain.exception.ValidationException;
 import org.omm.domain.model.BookDto;
 
 import java.util.Scanner;
@@ -12,7 +14,7 @@ public class Runner {
     private Scanner in;
     private BookController controller;
 
-    public void run() throws Exception{
+    public void run() throws Exception {
         SetUp setup = new SetUp();
         setup.setUpDashboard();
         controller = setup.setUpController();
@@ -38,9 +40,18 @@ public class Runner {
                     case 5:
                         update();
                         break;
+                    case -1:
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("Not Valid!");
                 }
+            } catch (ValidationException e) {
+                log.info("Validation Error!\n" + e);
+            } catch (BusinessException e) {
+                log.info("Business Error!\n" + e);
             } catch (Exception e) {
-                log.info("" + e);
+                log.info("General Error!\n" + e);
             }
         }
     }
@@ -52,7 +63,7 @@ public class Runner {
                 "\n3: to add a book" +
                 "\n4: to delete a book" +
                 "\n5: to update a book" +
-                "\nnegative number: to exit");
+                "\n-1: to exit");
     }
 
     private void retrieveById() throws Exception {

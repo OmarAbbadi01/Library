@@ -10,10 +10,10 @@ public interface BookService {
 
     List<BookDto> findAll() throws Exception;
 
-    void create(BookDto book) throws Exception;
+    void create(BookDto bookDto) throws Exception;
 
     void delete(Long id) throws Exception;
 
-    void update(BookDto book) throws Exception;
+    void update(BookDto bookDto) throws Exception;
 
 }

@@ -1,13 +1,9 @@
 package org.omm.inftastructure.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
 public class Book {
 
@@ -17,7 +13,11 @@ public class Book {
 
     private String title;
 
-    // other attributes
-    // deleted
+    private boolean deleted = false;
 
+    public Book(Long id, Long authorId, String title) {
+        this.id = id;
+        this.authorId = authorId;
+        this.title = title;
+    }
 }

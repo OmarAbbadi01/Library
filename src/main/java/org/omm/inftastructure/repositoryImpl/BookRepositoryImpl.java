@@ -1,4 +1,4 @@
-package org.omm.inftastructure.dao;
+package org.omm.inftastructure.repositoryImpl;
 
 import org.omm.domain.model.BookDto;
 import org.omm.domain.repository.BookRepository;
@@ -10,30 +10,17 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookDao implements BookRepository {
+public class BookRepositoryImpl implements BookRepository {
 
     private final List<Connection> connections;
 
-    public BookDao(List<Connection> connections) {
+    public BookRepositoryImpl(List<Connection> connections) {
         this.connections = connections;
     }
 
-    private void before() throws Exception{
-        String query = "CREATE TABLE IF NOT EXISTS book  \n" +
-                "(\n" +
-                "\tid BIGINT, \n" +
-                "\tauthor_id BIGINT,\n" +
-                "\ttitle VARCHAR,\n" +
-                "\tprimary key (id)\n" +
-                ");";
-        for (Connection c : connections) {
-            PreparedStatement p = c.prepareStatement(query);
-            p.executeUpdate();
-        }
-    }
     @Override
     public BookDto findById(Long id) throws Exception {
-        String query = "SELECT * FROM book WHERE id = ?";
+        String query = "SELECT * FROM book WHERE id = ? AND deleted = FALSE";
         Connection conn = connections.get(0);
         PreparedStatement statement = conn.prepareStatement(query);
         statement.setInt(1, id.intValue());
@@ -47,11 +34,9 @@ public class BookDao implements BookRepository {
         return null;
     }
 
-
     @Override
     public List<BookDto> findAll() throws Exception {
-        before();
-        String query = "SELECT * FROM book";
+        String query = "SELECT * FROM book WHERE deleted = FALSE";
         List<BookDto> books = new ArrayList<>();
         Connection conn = connections.get(0);
         PreparedStatement statement = conn.prepareStatement(query);
@@ -67,20 +52,21 @@ public class BookDao implements BookRepository {
     }
 
     @Override
-    public void create(BookDto book) throws Exception {
-        String query = "INSERT INTO book VALUES (?, ?, ?)";
+    public void create(BookDto bookDto) throws Exception {
+        String query = "INSERT INTO book VALUES (?, ?, ?, ?)";
         for (Connection conn : connections) {
             PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1, book.getId().intValue());
-            statement.setInt(2, book.getAuthorId().intValue());
-            statement.setString(3, book.getTitle());
+            statement.setInt(1, bookDto.getId().intValue());
+            statement.setInt(2, bookDto.getAuthorId().intValue());
+            statement.setString(3, bookDto.getTitle());
+            statement.setBoolean(4, false);
             statement.executeUpdate();
         }
     }
 
     @Override
     public void delete(Long id) throws Exception {
-        String query = "DELETE FROM book WHERE id = ?";
+        String query = "UPDATE book SET deleted = TRUE WHERE id = ?";
         for (Connection conn : connections) {
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setInt(1, id.intValue());
@@ -89,21 +75,21 @@ public class BookDao implements BookRepository {
     }
 
     @Override
-    public void update(BookDto book) throws Exception {
+    public void update(BookDto bookDto) throws Exception {
         String query = "UPDATE book SET id = ?, author_id = ?, title = ? WHERE id = ?";
         for (Connection conn : connections) {
             PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1, book.getId().intValue());
-            statement.setInt(2, book.getAuthorId().intValue());
-            statement.setString(3, book.getTitle());
-            statement.setInt(4, book.getId().intValue());
+            statement.setInt(1, bookDto.getId().intValue());
+            statement.setInt(2, bookDto.getAuthorId().intValue());
+            statement.setString(3, bookDto.getTitle());
+            statement.setInt(4, bookDto.getId().intValue());
             statement.executeUpdate();
         }
     }
 
     @Override
     public boolean existsById(Long id) throws Exception {
-        String query = "SELECT COUNT(*) FROM book WHERE id = ?";
+        String query = "SELECT COUNT(id) AS COUNT FROM book WHERE id = ? AND deleted = FALSE";
         Connection conn = connections.get(0);
         PreparedStatement statement = conn.prepareStatement(query);
         statement.setInt(1, id.intValue());

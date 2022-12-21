@@ -1,4 +1,4 @@
-package org.omm.inftastructure.dao;
+package org.omm.inftastructure.repositoryImpl;
 
 import org.omm.domain.model.BookDto;
 import org.omm.inftastructure.entity.Book;

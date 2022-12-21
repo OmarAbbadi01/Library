@@ -1,16 +1,19 @@
-package org.omm;
+package org.omm.application.config;
 
-import org.omm.application.BookController;
-import org.omm.application.BookValidator;
-import org.omm.application.BookValidatorImpl;
+import org.omm.application.controller.BookController;
+import org.omm.application.validator.BookValidator;
+import org.omm.application.validator.BookValidatorImpl;
 import org.omm.domain.repository.BookRepository;
 import org.omm.domain.service.BookService;
 import org.omm.domain.service.BookServiceImpl;
 import org.omm.domain.service.Subject;
-import org.omm.inftastructure.connection.*;
+import org.omm.inftastructure.connection.ConnectionFactory;
+import org.omm.inftastructure.connection.MySqlFactory;
+import org.omm.inftastructure.connection.PostgreSqlFactory;
 import org.omm.inftastructure.repositoryImpl.BookRepositoryImpl;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,14 +27,37 @@ public class SetUp {
     private Dashboard dashboard;
 
     private List<Connection> setUpConnections() {
-        ConnectionFactory postgreSqlFactory = new PostgreSqlFactory("library", "root", "library");
-        ConnectionFactory mySqlFactory = new MySqlFactory("library", "root12341234", "public");
         if (connections == null) {
-            connections = new ArrayList<>();
+            connections = new ArrayList<>(Configuration.credentials.size());
+            ConnectionCredentials postgres = Configuration.credentials.get(0);
+            ConnectionFactory postgreSqlFactory = new PostgreSqlFactory(postgres.getUsername(), postgres.getPassword(), postgres.getDatabaseName());
+            ConnectionCredentials mysql = Configuration.credentials.get(1);
+            ConnectionFactory mySqlFactory = new MySqlFactory(mysql.getUsername(), mysql.getPassword(), mysql.getDatabaseName());
             connections.add(postgreSqlFactory.getConnection());
             connections.add(mySqlFactory.getConnection());
         }
+        setUpTables(connections);
         return connections;
+    }
+
+    private void setUpTables(List<Connection> connections) {
+        String query = "CREATE TABLE IF NOT EXISTS book \n" +
+                "(\n" +
+                "\tid BIGINT NOT NULL,\n" +
+                "\tauthor_id BIGINT NOT NULL,\n" +
+                "\ttitle VARCHAR(50) NOT NULL,\n" +
+                "\tdeleted BOOLEAN NOT NULL,\n" +
+                "\tPRIMARY KEY (id)\n" +
+                ");";
+        for (Connection connection : connections) {
+            try {
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.execute();
+            } catch (Exception e) {
+                System.out.println(e);
+                System.exit(0);
+            }
+        }
     }
 
     private BookRepository setUpRepository() {

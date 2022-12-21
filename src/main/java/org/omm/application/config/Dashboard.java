@@ -1,4 +1,4 @@
-package org.omm;
+package org.omm.application.config;
 
 import org.omm.domain.model.BookDto;
 import org.omm.domain.service.BookService;

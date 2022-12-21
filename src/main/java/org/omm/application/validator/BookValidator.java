@@ -1,4 +1,4 @@
-package org.omm.application;
+package org.omm.application.validator;
 
 import org.omm.domain.model.BookDto;
 

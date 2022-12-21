@@ -1,7 +1,8 @@
-package org.omm.application;
+package org.omm.application.controller;
 
 import lombok.AllArgsConstructor;
 import org.omm.application.response.BookResponse;
+import org.omm.application.validator.BookValidator;
 import org.omm.domain.model.Status;
 import org.omm.domain.model.BookDto;
 import org.omm.domain.service.BookService;

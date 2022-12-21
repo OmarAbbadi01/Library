@@ -1,7 +1,8 @@
-package org.omm;
+package org.omm.application.config;
 
 import lombok.extern.java.Log;
-import org.omm.application.BookController;
+import org.omm.application.config.SetUp;
+import org.omm.application.controller.BookController;
 import org.omm.domain.exception.BusinessException;
 import org.omm.domain.exception.ValidationException;
 import org.omm.domain.model.BookDto;

@@ -10,6 +10,9 @@ import org.omm.domain.service.Subject;
 import org.omm.inftastructure.connection.ConnectionFactory;
 import org.omm.inftastructure.connection.MySqlFactory;
 import org.omm.inftastructure.connection.PostgreSqlFactory;
+import org.omm.inftastructure.dao.BookDaoImpl;
+import org.omm.inftastructure.dao.GenericDao;
+import org.omm.inftastructure.entity.Book;
 import org.omm.inftastructure.repositoryImpl.BookRepositoryImpl;
 
 import java.sql.Connection;
@@ -20,8 +23,10 @@ import java.util.List;
 public class SetUp {
 
     private List<Connection> connections;
-    private BookService service;
+
+    private GenericDao<Book> bookDao;
     private BookRepository repository;
+    private BookService service;
     private BookValidator validator;
     private BookController controller;
     private Dashboard dashboard;
@@ -60,9 +65,16 @@ public class SetUp {
         }
     }
 
+    private GenericDao<Book> setUpDao() {
+        if (bookDao == null) {
+            bookDao = new BookDaoImpl(setUpConnections());
+        }
+        return bookDao;
+    }
+
     private BookRepository setUpRepository() {
         if (repository == null)
-            repository = new BookRepositoryImpl(setUpConnections());
+            repository = new BookRepositoryImpl(setUpDao());
         return repository;
     }
 

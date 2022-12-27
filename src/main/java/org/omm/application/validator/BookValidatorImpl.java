@@ -1,6 +1,5 @@
 package org.omm.application.validator;
 
-import org.omm.application.validator.BookValidator;
 import org.omm.domain.exception.ValidationException;
 import org.omm.domain.model.BookDto;
 import org.omm.domain.model.Status;

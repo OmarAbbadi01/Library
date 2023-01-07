@@ -1,4 +1,5 @@
 # library
+This project is created in 2022-2023 fall semester during the 'Design Patterns' course, and it is meant to show real work using design patterns we learned in the course.
 This project is to CRUD books into database, it simulates the hexagonal (ports and adatpters) architecture, 
 it uses Factory Method, Singleton, Adpater, and Observer patterns.
 
